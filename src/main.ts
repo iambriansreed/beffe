@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-
 import express, { Express } from 'express';
 import vhost from 'vhost';
 import helmet from 'helmet';
@@ -9,7 +7,11 @@ import localDevApp from './apps/local.dev/_routes';
 import heyreedApp from './apps/api.heyreed.dev/_routes';
 
 export default function App(app: Express) {
-    app.use(helmet());
+    app.use(
+        helmet({
+            crossOriginResourcePolicy: { policy: 'cross-origin' },
+        })
+    );
     app.use(express.json());
     app.use(vhost('local.com', localComApp));
     app.use(vhost('local.dev', localDevApp));
