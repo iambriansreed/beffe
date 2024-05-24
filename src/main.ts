@@ -14,4 +14,5 @@ export default function App(app: Express) {
     app.use(vhost('local.com', localComApp));
     app.use(vhost('local.dev', localDevApp));
     app.use(vhost('api.heyreed.dev', heyreedApp));
+    app.use(vhost('api.heyreed.com', heyreedApp));
 }
