@@ -5,7 +5,7 @@ import { spotifySearch } from './spotify';
 const app = express();
 
 app.get('/', function (req, res) {
-    res.send('heyreed ONLY!');
+    res.send('heyreed beffe');
 });
 
 app.get('/rsvp-check', async function (req, res) {

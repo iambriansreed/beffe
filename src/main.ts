@@ -9,7 +9,7 @@ import heyreedApp from './apps/api.heyreed.dev/_routes';
 export default function App(app: Express) {
     app.use(
         helmet({
-            crossOriginResourcePolicy: { policy: 'cross-origin' },
+            crossOriginResourcePolicy: false,
         })
     );
     app.use(express.json());
