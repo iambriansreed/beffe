@@ -27,7 +27,10 @@ export async function getRowByCode(inviteCode: string) {
 
     const sheet = await getSheet();
     const rows = await sheet.getRows();
-    return rows.find((r) => r.get('code') === inviteCode) || null;
+    return (
+        rows.find((r) => r.get('code').toString().toUpperCase() === inviteCode.toString().toUpperCase()) ||
+        null
+    );
 }
 
 export type RsvpData = {
