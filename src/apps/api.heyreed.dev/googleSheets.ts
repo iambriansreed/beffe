@@ -22,22 +22,48 @@ async function getSheet() {
     return sheet;
 }
 
-export async function rsvpCheck(inviteCode: string) {
-    const sheet = await getSheet();
+export async function getRowByCode(inviteCode: string) {
+    if (inviteCode.length !== 6) return null;
 
-    sheet.addRows([]);
+    const sheet = await getSheet();
     const rows = await sheet.getRows();
-    return rows.find((r) => r.get('invite_code') === inviteCode) || null;
+    return rows.find((r) => r.get('code') === inviteCode) || null;
 }
 
-export async function rsvpSubmit(inviteCode: string, rsvpGuestCount: number, songId?: string) {
-    const row = await rsvpCheck(inviteCode);
+export type RsvpData = {
+    attending: 'yes' | 'no';
+    code: string;
+    email: string;
+    guests: string;
+    message: string;
+    name: string;
+    song: string;
+    song_id: string;
+};
+
+export async function rsvpSubmit(rsvp: RsvpData) {
+    const row = await getRowByCode(rsvp.code);
 
     if (!row) return null;
 
-    row.set('rsvp_guest_count', rsvpGuestCount);
-    row.set('song_id', songId || 'None selected');
-    row.set('api_updated_at', new Date().toISOString());
+    row.set('attending', rsvp.attending || 'no');
+    row.set('email', rsvp.email || '');
+    row.set('guests', rsvp.attending === 'yes' ? rsvp.guests : 0);
+    row.set('message', rsvp.message || '');
+    row.set('song', rsvp.song || '');
+    row.set('song_id', rsvp.song_id || '');
+    row.set(
+        'updated',
+        new Date().toLocaleString('en-us', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        })
+    );
+
     row.save();
 
     return row.toObject();

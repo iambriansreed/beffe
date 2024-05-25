@@ -1,20 +1,35 @@
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 
-export async function spotifySearch(query: string) {
-    const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env;
+const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env;
+
+let api: SpotifyApi | null = null;
+
+function spotifyApiInit() {
+    if (api) return api;
+
     if (!SPOTIFY_CLIENT_ID) throw new Error('SPOTIFY_CLIENT_ID not set');
     if (!SPOTIFY_CLIENT_SECRET) throw new Error('SPOTIFY_CLIENT_SECRET not set');
 
-    console.log('Searching Spotify for The Beatles...');
+    api =
+        (SPOTIFY_CLIENT_ID &&
+            SPOTIFY_CLIENT_SECRET &&
+            SpotifyApi.withClientCredentials(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET)) ||
+        null;
 
-    const api = SpotifyApi.withClientCredentials(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
+    return api;
+}
 
-    const result = await api.search('The Beatles', ['track']);
+export async function spotifySearch(query: string) {
+    spotifyApiInit();
 
-    const data = result.tracks.items.map((item) => ({
+    if (!api) return [];
+
+    const result = await api.search(query, ['track']);
+
+    const data = result?.tracks?.items.map((item) => ({
         name: item.name,
         artist: item.artists[0].name,
-        album: item.album.name,
+        id: item.external_urls.spotify,
     }));
 
     return data;
