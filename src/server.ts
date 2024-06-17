@@ -1,10 +1,17 @@
 import express from 'express';
-import App from './main';
+import App from './app';
+import http from 'node:http';
 
-const app = express();
+async function main() {
+    const app = express();
 
-App(app);
+    const server = http.createServer(app);
 
-app.listen(process.env.PORT, function () {
-    console.log('Server started at localhost:' + process.env.PORT);
-});
+    await App(app, server);
+
+    server.listen(process.env.PORT, function () {
+        console.log('Server started at localhost:' + process.env.PORT);
+    });
+}
+
+main();

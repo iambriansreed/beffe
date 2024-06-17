@@ -1,0 +1,1 @@
+mkcert  -key-file .sslcert/key.pem -cert-file .sslcert/cert.pem localhost local.dev local.com api.heyreed.dev chat.iambrian.dev

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import http from 'node:http';
 import https from 'node:https';
 import express from 'express';
-import App from './main';
+import App from './app';
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
     next();
 });
 
-App(app);
+App(app, httpServer);
 
 httpsServer.listen(443, function () {
     console.log('server started at https://localhost');
