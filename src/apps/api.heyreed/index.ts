@@ -10,7 +10,7 @@ app.get('/', function (req, res) {
 
 app.get('/rsvp-check', async function (req, res) {
     const inviteCode = req.query.id?.toString()?.trim() || '';
-    if (inviteCode.length !== 6) return res.status(400).json({ error: 'Invalid invite code' });
+    if (inviteCode.length !== 4) return res.status(400).json({ error: 'Invalid invite code' });
     const row = await getRowByCode(inviteCode);
     if (!row) return res.status(404).json({ error: 'Invite not found' });
     return res.json(row.toObject());
