@@ -23,7 +23,7 @@ async function getSheet() {
 }
 
 export async function getRowByCode(inviteCode: string) {
-    if (inviteCode.length !== 6) return null;
+    if (inviteCode.length !== 4) return null;
 
     const sheet = await getSheet();
     const rows = await sheet.getRows();
