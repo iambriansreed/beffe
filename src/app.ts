@@ -20,11 +20,14 @@ export default async function App(app: Express, server: http.Server) {
     });
     app.use(express.json());
 
-    app.use(vhost('local.com', (await import('./apps/local')).default));
-    app.use(vhost('local.dev', (await import('./apps/local')).default));
+    app.use(vhost('local.com', (await import('./apps/default')).default));
+    app.use(vhost('local.dev', (await import('./apps/default')).default));
 
     app.use(vhost('api.heyreed.dev', (await import('./apps/api.heyreed')).default));
     app.use(vhost('api.heyreed.com', (await import('./apps/api.heyreed')).default));
+
+    app.use(vhost('api.iambrian.dev', (await import('./apps/api.iambrian')).default));
+    app.use(vhost('api.iambrian.com', (await import('./apps/api.iambrian')).default));
 
     // chat.iambrian.com
     new Server(server, {

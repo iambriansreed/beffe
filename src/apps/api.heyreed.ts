@@ -1,6 +1,6 @@
 import express from 'express';
-import getSheet from './googleSheets';
-import { spotifySearch } from './spotify';
+import getSheet from '../utils/googleSheets';
+import { spotifySearch } from '../utils/spotify';
 
 export type RsvpData = {
     attending: 'yes' | 'no';

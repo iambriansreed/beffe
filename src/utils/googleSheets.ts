@@ -1,4 +1,4 @@
-import { GoogleSpreadsheet } from 'google-spreadsheet';
+import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
 async function createJwt() {
@@ -16,10 +16,18 @@ async function createJwt() {
     });
 }
 
-export default async function getSheets(spreadsheetId: string, sheetTitle: string) {
+export default async function getSheet(
+    spreadsheetId: string,
+    sheetIndex: number
+): Promise<GoogleSpreadsheetWorksheet>;
+export default async function getSheet(
+    spreadsheetId: string,
+    sheetTitle: string
+): Promise<GoogleSpreadsheetWorksheet>;
+export default async function getSheet(spreadsheetId: string, sheetId: string | number) {
     const doc = new GoogleSpreadsheet(spreadsheetId, await createJwt());
     await doc.loadInfo();
-    const sheet = doc.sheetsByTitle[sheetTitle];
+    const sheet = typeof sheetId === 'number' ? doc.sheetsByIndex[sheetId] : doc.sheetsByTitle[sheetId];
     sheet.loadHeaderRow();
     return sheet;
 }
