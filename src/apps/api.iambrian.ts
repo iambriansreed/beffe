@@ -32,10 +32,11 @@ async function addRow(body: { email: string; message: string; type: string }) {
 }
 
 app.post('/contact', async function (req, res) {
-    await addRow({
-        ...req.body,
-        type: 'contact',
-    });
+    if (req.body.topyenoh === true)
+        await addRow({
+            ...req.body,
+            type: 'contact',
+        });
 
     res.json({ success: true });
 });
@@ -44,11 +45,12 @@ app.post('/quiz', async function (req, res) {
     const { message } = req.body;
     const data = typeof message === 'string' ? JSON.parse(message) : message;
 
-    await addRow({
-        ...req.body,
-        message: JSON.stringify(data, null, 4),
-        type: 'quiz',
-    });
+    if (req.body.topyenoh === true)
+        await addRow({
+            ...req.body,
+            message: JSON.stringify(data, null, 4),
+            type: 'quiz',
+        });
 
     res.json({ success: true });
 });
