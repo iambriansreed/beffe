@@ -38,15 +38,15 @@ async function addRow(body: { email: string; message: string; type: string }) {
 app.post('/contact', async function (req, res) {
     const { token } = req.body;
 
-    verify(HCAPTCHA_SECRET, token).then(async (data) => {
-        if (data.success === true) {
+    verify(HCAPTCHA_SECRET, token).then(async ({ success }) => {
+        if (success === true) {
             await addRow({
                 ...req.body,
                 type: 'contact',
             });
         }
 
-        res.json({ success: data.success });
+        res.json({ success });
     });
 });
 
@@ -54,17 +54,17 @@ app.post('/quiz', async function (req, res) {
     const { message, token } = req.body;
     const data = typeof message === 'string' ? JSON.parse(message) : message;
 
-    verify(HCAPTCHA_SECRET, token).then(async (data) => {
-        if (data.success === true) {
+    verify(HCAPTCHA_SECRET, token).then(async ({ success }) => {
+        if (success === true) {
             await addRow({
                 ...req.body,
                 message: JSON.stringify(data, null, 4),
                 type: 'quiz',
             });
         }
-    });
 
-    res.json({ success: data.success });
+        res.json({ success });
+    });
 });
 
 export default app;
