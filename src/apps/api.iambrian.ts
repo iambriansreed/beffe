@@ -55,6 +55,8 @@ app.post('/quiz', async function (req, res) {
     const data = typeof message === 'string' ? JSON.parse(message) : message;
 
     verify(HCAPTCHA_SECRET, token).then(async ({ success }) => {
+        console.log({ data, success });
+
         if (success === true) {
             await addRow({
                 ...req.body,
