@@ -36,9 +36,10 @@ async function addRow(body: { email: string; message: string; type: string }) {
 }
 
 app.post('/contact', async function (req, res) {
-    const { token } = req.body;
+    try {
+        const { token } = req.body;
+        const { success } = await verify(HCAPTCHA_SECRET, token);
 
-    verify(HCAPTCHA_SECRET, token).then(async ({ success }) => {
         if (success === true) {
             await addRow({
                 ...req.body,
@@ -47,14 +48,18 @@ app.post('/contact', async function (req, res) {
         }
 
         res.json({ success });
-    });
+    } catch (err) {
+        console.error('contact error', err);
+        if (!res.headersSent) res.status(500).json({ success: false });
+    }
 });
 
 app.post('/quiz', async function (req, res) {
-    const { message, token } = req.body;
-    const data = typeof message === 'string' ? JSON.parse(message) : message;
+    try {
+        const { message, token } = req.body;
+        const data = typeof message === 'string' ? JSON.parse(message) : message;
 
-    verify(HCAPTCHA_SECRET, token).then(async ({ success }) => {
+        const { success } = await verify(HCAPTCHA_SECRET, token);
         console.log({ data, success });
 
         if (success === true) {
@@ -66,7 +71,10 @@ app.post('/quiz', async function (req, res) {
         }
 
         res.json({ success });
-    });
+    } catch (err) {
+        console.error('quiz error', err);
+        if (!res.headersSent) res.status(500).json({ success: false });
+    }
 });
 
 export default app;
