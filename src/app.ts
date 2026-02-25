@@ -6,16 +6,29 @@ import { SocketServer } from '@bsr-comm/utils';
 import crypto from 'node:crypto';
 import http from 'node:http';
 
+const CORS_ALLOWED_ORIGINS = new Set(
+    (process.env.CORS_ALLOWED_ORIGINS || 'http://local.com,http://local.dev,https://heyreed.com,https://heyreed.dev,https://iambrian.com,https://iambrian.dev,https://splndr.iambrian.dev,http://localhost:3000,http://127.0.0.1:3000')
+        .split(',')
+        .map((o) => o.trim())
+        .filter(Boolean)
+);
+
 export default async function App(app: Express, server: http.Server) {
     app.use(helmet());
-    app.all('*', function (_, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        res.header(
+    app.all('*', function (req, res, next) {
+        const origin = req.headers.origin;
+        if (origin && CORS_ALLOWED_ORIGINS.has(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+        }
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+        res.setHeader(
             'Access-Control-Allow-Headers',
             'Origin, X-Requested-With, Content-Type, Accept, Authorization',
         );
+        if (req.method === 'OPTIONS') {
+            return res.sendStatus(204);
+        }
         next();
     });
     app.use(express.json());
