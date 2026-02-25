@@ -11,11 +11,11 @@ function getApiInfo(): { name: string; version: string } {
         const pkg = require(PKG_PATH) as { name?: string; version?: string };
         cached = {
             name: pkg.name ?? 'beffe',
-            version: pkg.version ?? '0.0.0',
+            version: pkg.version ?? '0.0.1',
         };
         return cached;
     } catch {
-        cached = { name: 'beffe', version: '0.0.0' };
+        cached = { name: 'beffe', version: '0.0.1' };
         return cached;
     }
 }
