@@ -14,7 +14,7 @@ export default async function App(app: Express, server: http.Server) {
         res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
         res.header(
             'Access-Control-Allow-Headers',
-            'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+            'Origin, X-Requested-With, Content-Type, Accept, Authorization',
         );
         next();
     });
