@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import { SocketServer } from '@bsr-comm/utils';
 import crypto from 'node:crypto';
 import http from 'node:http';
+import { apiVersionHeaders } from './utils/apiHeaders';
 
 const CORS_ALLOWED_ORIGINS = new Set(
     (process.env.CORS_ALLOWED_ORIGINS || 'http://local.com,http://local.dev,https://heyreed.com,https://heyreed.dev,https://iambrian.com,https://iambrian.dev,https://splndr.iambrian.dev,http://localhost:3000,http://127.0.0.1:3000')
@@ -32,6 +33,7 @@ export default async function App(app: Express, server: http.Server) {
         next();
     });
     app.use(express.json());
+    app.use(apiVersionHeaders);
 
     app.use(vhost('local.com', (await import('./apps/default')).default));
     app.use(vhost('local.dev', (await import('./apps/default')).default));
