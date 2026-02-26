@@ -5,35 +5,25 @@ import { Server } from 'socket.io';
 import { SocketServer } from '@bsr-comm/utils';
 import crypto from 'node:crypto';
 import http from 'node:http';
-import path from 'node:path';
-import fs from 'node:fs';
 import { apiVersionHeaders } from './utils/apiHeaders';
+import getApps from './utils/getApps';
 
 export default async function App(app: Express, server: http.Server | http.Server[]) {
-    const appsDir = path.join(__dirname, 'apps');
-    const appNames = fs.readdirSync(appsDir).filter((f) => fs.statSync(path.join(appsDir, f)).isDirectory());
+    const apps = await getApps();
 
-    const apps = await Promise.all(
-        appNames.map(async (name) => {
-            const mod = await import(`./apps/${name}/index.js`);
-            return mod.default as { hostname: (string | RegExp)[]; app: Express };
-        }),
-    );
-
-    // all apps' hostnames as CORS allowed origins
+    /** Origins allowed to call this API. Override with CORS_ALLOWED_ORIGINS. */
     const corsAllowedOrigins = new Set(
-        apps.flatMap((site) =>
-            (site.hostname as string[]).flatMap((host) => [`http://${host}`, `https://${host}`]),
-        ),
+        apps
+            .flatMap((app) => [...(app.hostname as string[]), ...(app.corsOrigins || [])])
+            .flatMap((h) => [`http://${h}`, `https://${h}`]),
     );
 
     /** Hosts allowed to open Socket.IO connections. Override with SOCKET_IO_ALLOWED_HOSTS. */
-    const socketIoAllowedHosts = new Set(['chat.iambrian.com', 'localhost', '127.0.0.1']);
-
-    function isSocketIoHostAllowed(host: string | undefined): boolean {
-        if (!host) return false;
-        return socketIoAllowedHosts.has(host.split(':')[0].toLowerCase());
-    }
+    const socketIoAllowedHosts = new Set([
+        'localhost',
+        '127.0.0.1',
+        ...apps.flatMap((app) => app.socketIoAllowedHosts || []),
+    ]);
 
     const servers = Array.isArray(server) ? server : [server];
 
@@ -71,7 +61,7 @@ export default async function App(app: Express, server: http.Server | http.Serve
         const io = new Server(s, {
             allowRequest: (req, callback) => {
                 const host = req.headers.host;
-                if (!isSocketIoHostAllowed(host)) {
+                if (!host || !socketIoAllowedHosts.has(host.split(':')[0])) {
                     callback(null, false);
                     return;
                 }

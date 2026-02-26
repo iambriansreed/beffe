@@ -4,6 +4,8 @@ import { appFromConfig } from '../../utils/appFromConfig';
 
 export default appFromConfig({
     hostname: ['api.iambrian.dev', 'api.iambrian.com'],
+    corsOrigins: ['iambrian.com', 'iambrian.dev'],
+    socketIoAllowedHosts: ['chat.iambrian.com'],
     get: {
         '/': (_req: import('express').Request, res: import('express').Response) => {
             res.send('iambrian beffe');

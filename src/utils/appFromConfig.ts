@@ -5,10 +5,7 @@ const METHODS = ['get', 'post', 'put', 'delete', 'patch', 'options', 'head'] as 
 /**
  * Builds an Express app from a site config (hostnames + method/path handlers).
  */
-export function appFromConfig(site: App): {
-    hostname: (string | RegExp)[];
-    app: Express;
-} {
+export function appFromConfig(site: AppConfig): App {
     const app = express();
 
     for (const method of METHODS) {
@@ -21,5 +18,10 @@ export function appFromConfig(site: App): {
         }
     }
 
-    return { hostname: site.hostname, app };
+    return {
+        hostname: site.hostname,
+        corsOrigins: site.corsOrigins,
+        app,
+        socketIoAllowedHosts: site.socketIoAllowedHosts,
+    };
 }
