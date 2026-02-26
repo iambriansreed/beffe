@@ -22,6 +22,7 @@ export default async function App(app: Express, server: http.Server | http.Serve
     const socketIoAllowedHosts = new Set([
         'localhost',
         '127.0.0.1',
+        'beffe.onrender.com',
         ...apps.flatMap((app) => app.socketIoAllowedHosts || []),
     ]);
 
