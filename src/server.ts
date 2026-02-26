@@ -10,7 +10,7 @@ async function main() {
     await App(app, server);
 
     server.listen(process.env.PORT, function () {
-        console.log('Server started at localhost:' + process.env.PORT);
+        console.log(`Server started at localhost:${process.env.PORT}`);
     });
 }
 

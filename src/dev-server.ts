@@ -19,7 +19,7 @@ app.use((req, res, next) => {
     next();
 });
 
-App(app, httpServer);
+App(app, [httpServer, httpsServer]);
 
 httpsServer.listen(443, function () {
     console.log('server started at https://localhost');
