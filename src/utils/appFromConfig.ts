@@ -23,5 +23,6 @@ export function appFromConfig(site: AppConfig): App {
         corsOrigins: site.corsOrigins,
         app,
         socketIoAllowedHosts: site.socketIoAllowedHosts,
+        setupSocket: site.setupSocket,
     };
 }

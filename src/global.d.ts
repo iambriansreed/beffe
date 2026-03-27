@@ -7,6 +7,7 @@ type AppConfig = {
     /** Frontend origins allowed to call this API (e.g. https://iambrian.com for api.iambrian.com). */
     corsOrigins?: (string | RegExp)[];
     socketIoAllowedHosts?: string[];
+    setupSocket?: (io: import('socket.io').Server) => void;
 } & Partial<Record<Method, Record<string, import('express').RequestHandler>>>;
 
 type App = {
@@ -14,4 +15,5 @@ type App = {
     corsOrigins?: (string | RegExp)[];
     app: Express;
     socketIoAllowedHosts?: string[];
+    setupSocket?: (io: import('socket.io').Server) => void;
 };

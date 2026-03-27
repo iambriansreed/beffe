@@ -81,5 +81,10 @@ export default async function App(app: Express, server: http.Server | http.Serve
             },
         });
         io.on('connection', socketIoConnectionHandler);
+
+        // Let each app register its own Socket.IO namespaces
+        for (const { setupSocket } of apps) {
+            setupSocket?.(io);
+        }
     }
 }
