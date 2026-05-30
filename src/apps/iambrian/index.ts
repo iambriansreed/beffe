@@ -3,8 +3,8 @@ import getSheet from '../../utils/googleSheets';
 import { appFromConfig } from '../../utils/appFromConfig';
 
 export default appFromConfig({
-    hostname: ['api.iambrian.dev', 'api.iambrian.com'],
-    corsOrigins: ['iambrian.com', 'iambrian.dev'],
+    hostname: ['api.iambrian.dev', 'api.iambrian.com', 'api.iambrian.local'],
+    corsOrigins: ['iambrian.com', 'iambrian.dev', 'local.local:3000'],
     socketIoAllowedHosts: ['chat.iambrian.com'],
     get: {
         '/': (_req: import('express').Request, res: import('express').Response) => {
